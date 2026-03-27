@@ -8,11 +8,11 @@ Quick reference for interviewers. Questions with concise expected answers.
 
 **1. What are Terraform modules and why are they important?**
 
-A module encapsulates related resources into a reusable, versioned unit. Enforces DRY, consistency, and standards across teams. One source of truth — change once, every consumer gets the update. Pin provider versions inside the module and publish to a private registry with semantic versioning.
+A module encapsulates related resources into a reusable, versioned unit. Enforces DRY, consistency, and standards across teams. One source of truth — change once, every consumer gets the update. Pin provider versions and publish to a private registry with semantic versioning.
 
-**2. What is Terraform state and what are `plan` vs `apply`?**
+**2. What is Terraform state and why does it matter?**
 
-State (`terraform.tfstate`) maps your config to real infrastructure — it's how Terraform knows what exists and what changed. Without state, it can't tell drift from intent. `plan` previews changes before touching anything. `apply` executes them. Always `plan` before `apply`.
+State (`terraform.tfstate`) maps your config to real infrastructure. Without it, Terraform can't tell what's actually deployed versus what you wrote in code. It tracks dependencies, resource IDs, and current attributes. Key rule: never edit state manually and never store it locally in a team environment — use a remote backend (S3 + DynamoDB, Terraform Cloud) with state locking to prevent concurrent changes from corrupting it.
 
 ---
 
@@ -24,7 +24,7 @@ Deploy code without managing servers. Scales automatically to zero, pay-per-use,
 
 **4. How would you reduce cloud costs?**
 
-Right-size instances (most over-provisioned), use Reserved/Savings Plans for steady baseline, Spot for fault-tolerant batch jobs. Auto-scale to match real demand, serverless for bursty traffic. Tag everything so you know who's spending what. Set budgets and alerts. FinOps mindset: make engineering teams own the cost of what they deploy — show costs in their dashboards.
+Right-size instances (most are over-provisioned). Use Reserved/Savings Plans for steady baseline, Spot for fault-tolerant batch jobs. Auto-scale to match real demand, go serverless for bursty traffic. Tag everything so you know who's spending what, set budgets and alerts. FinOps mindset: make engineering teams own the cost of what they deploy — show costs in their dashboards, not just the finance team's.
 
 ---
 
@@ -32,11 +32,11 @@ Right-size instances (most over-provisioned), use Reserved/Savings Plans for ste
 
 **5. Compare trunk-based development and GitFlow.**
 
-Trunk-based: small commits straight to `main` (or merged in 1-2 days), feature flags hide incomplete work, needs strong CI. Fast feedback loops, continuous delivery. GitFlow: long-lived branches (`develop`, `release/*`, `hotfix/*`), more ceremony, suited for versioned releases or regulated environments. Modern teams building cloud-native software lean trunk-based.
+Trunk-based: small commits to `main` (or short-lived branches merged in 1-2 days), feature flags hide incomplete work, strong CI required. Fast feedback, continuous delivery. GitFlow: long-lived branches (`develop`, `release/*`, `hotfix/*`), more ceremony, suited for versioned releases or regulated environments. Most modern cloud-native teams lean trunk-based.
 
-**6. What are interactive rebase, cherry-pick, and git bisect?**
+**6. When would you use git merge versus git rebase?**
 
-Rebase: rewrite/squash/reorder commits before merging — keep history clean. Cherry-pick: apply one specific commit from any branch onto another — useful for backporting a fix without merging everything. Bisect: binary search through commit history to isolate which commit introduced a bug. Much faster than testing every commit manually.
+Merge preserves history as-is — creates a merge commit and keeps all commits separate. Safe for shared branches, makes the timeline accurate but noisier. Rebase rewrites commits on top of the target branch, producing a linear, clean history — use it on feature branches before merging to `main`, never on shared/public branches. Rule of thumb: rebase to keep your branch tidy, merge to integrate completed work. Rebase rewrites history, so it's only for local or branch-level commits.
 
 ---
 
@@ -44,27 +44,27 @@ Rebase: rewrite/squash/reorder commits before merging — keep history clean. Ch
 
 **7. How would you use LLMs in your DevOps work?**
 
-Log summarization and incident triage (paste error → get root cause hypothesis), IaC scaffolding (describe what you want in words, refine the output), query building (PromQL, KQL, SQL from natural language), documentation generation, script authoring, AI-assisted code review. Always review the output — LLMs are confidently wrong sometimes.
+Log summarization and incident triage (paste an error, get a root cause hypothesis), IaC scaffolding (describe infra in words, refine the output), query building (PromQL, KQL, SQL from natural language), documentation generation, script authoring, AI-assisted code review. Always review the output — LLMs are confidently wrong sometimes.
 
 **8. What's the difference between an LLM and an AI agent?**
 
-LLM: stateless text generation — prompt in, response out. AI Agent: uses an LLM as a reasoning engine but adds tool use, memory, and autonomy — plans steps, executes actions, observes results, iterates. LLMs explain. Agents act. Example: an LLM describes why a pod crashed; an agent would detect the crash, check logs, identify the issue, and restart it.
+LLM: stateless text generation — prompt in, response out. AI Agent: uses an LLM as reasoning engine but adds tool use, memory, and autonomy — plans steps, executes actions, observes results, iterates. LLMs explain. Agents act. Example: an LLM describes why a pod crashed; an agent would detect it, check logs, identify the issue, and restart it.
 
 ---
 
-## Security
+## Cloud Security
 
-**9. How do you manage secrets in Kubernetes?**
+**9. How do Security Groups and NACLs work in AWS?**
 
-K8s Secrets are base64-encoded, not encrypted — not production-safe alone. Best approach: use Vault (dynamic secrets, lease rotation, audit logs) or External Secrets Operator (syncs from AWS SM, GCP SM, Vault into K8s Secrets). For GitOps-friendly: Sealed Secrets encrypts secrets so they can live in Git. Never commit plain secrets to Git. Prefer workload identity (IRSA, Workload Identity Federation) over static long-lived credentials.
+Security Groups (SGs) are stateful — if you allow inbound port 80, outbound is automatically allowed back. They're attached to ENIs (network interfaces) on instances and act as an instance-level firewall. NACLs are stateless and operate at the subnet level — you must explicitly allow both directions. Rules are evaluated in order by rule number. Best practice: lock down SGs to least privilege (only allow what each service needs), use NACLs as an additional perimeter layer. SGs are the primary control, NACLs are for broad subnet-level blocks (e.g., block a malicious IP range across the entire subnet).
 
 ---
 
-## Networking
+## Cloud Networking
 
-**10. How does networking work in Kubernetes?**
+**10. How does traffic flow in a VPC? Walk me through the basics.**
 
-CNI plugins (Calico, Cilium, AWS VPC CNI) assign each pod a unique IP and handle pod-to-pod routing across nodes. Services (ClusterIP, NodePort, LoadBalancer) expose pods as stable endpoints — load balance traffic across pod replicas. Ingress controllers route external HTTP/HTTPS traffic by host or path (NGINX Ingress, Traefik). Network Policies act as a firewall — default allows all pod-to-pod traffic, you restrict what's needed. CoreDNS handles service discovery: `curl my-svc.namespace.svc.cluster.local` resolves to the service IP.
+A VPC is an isolated network. Inside it you have subnets (public and private), route tables that define where traffic goes, an Internet Gateway (IGW) for public internet access, and NAT Gateways for private subnets to initiate outbound internet access without being reachable from outside. Security Groups and NACLs control who can talk to what. For internal service-to-service communication, you use private DNS or private link (VPC endpoint) — no IGW involved. Think of it as layers: NACLs (subnet level) → Security Groups (instance/ENI level) → routing (where to send traffic) → IGW/NAT (how to reach the internet).
 
 ---
 
@@ -73,12 +73,12 @@ CNI plugins (Calico, Cilium, AWS VPC CNI) assign each pod a unique IP and handle
 | # | Topic | Level |
 |---|-------|-------|
 | 1 | Terraform Modules | Core |
-| 2 | Terraform State / Plan / Apply | Core |
+| 2 | Terraform State | Core |
 | 3 | Serverless Computing | Core |
 | 4 | Cloud Cost Optimization | Core |
 | 5 | Git Branching Strategies | Core |
-| 6 | Advanced Git | Core |
+| 6 | Git Merge vs Rebase | Core |
 | 7 | LLMs in DevOps | Desirable |
 | 8 | LLM vs AI Agent | Desirable |
-| 9 | Secrets Management | Core |
-| 10 | Kubernetes Networking | Core |
+| 9 | Security Groups / NACLs | Core |
+| 10 | VPC Networking | Core |
