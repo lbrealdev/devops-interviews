@@ -34,27 +34,25 @@ A supply chain attack targets dependencies, build systems, or distribution chann
 
 ### 2. SDLC & DevOps Integration
 
-**Question:** Walk me through the SDLC and where DevOps adds the most value.
+**Question:** What does SDLC stand for and what does it mean? Give a concrete example of how DevOps interacts with it in practice.
 
 **Answer:**
 
-DevOps integrates into every SDLC stage to accelerate delivery while maintaining quality:
+**SDLC** (Software Development Life Cycle) is the structured process teams follow to plan, build, test, deploy, and maintain software — from initial concept to retirement.
 
-| Stage | DevOps Value |
-|-------|-------------|
-| **Planning** | Align engineering with business priorities, track dependencies |
-| **Design** | Threat modeling, Architecture Decision Records (ADRs) |
-| **Development** | Pre-commit hooks, linting, DevContainers for consistent environments |
-| **Testing** | Automated quality gates in CI, shift-left security (SAST/DAST) |
-| **Build** | Reproducible builds, artifact registries, SBOM generation |
-| **Release** | GitOps (ArgoCD), environment promotion with approval gates |
-| **Deploy** | Blue-green, canary, feature flags for zero-downtime releases |
-| **Operate** | Monitoring, alerting, runbooks, auto-scaling to maintain SLOs |
-| **Feedback** | Observability, error budgets, post-mortems closing the loop to planning |
+**Concrete example — deploying a new API endpoint:**
 
-**Key principles:** shift-left, automate everything, short feedback loops, blameless post-mortems.
+1. **Planning**: Product defines requirements in Jira. DevOps ensures the ticket includes infrastructure needs.
+2. **Development**: DevOps provides a DevContainer so the local environment matches production.
+3. **CI Pipeline**: On PR, GitHub Actions runs tests, linting, and a container build. DevOps maintains this pipeline.
+4. **Deploy to Staging**: ArgoCD detects the new image tag in Git and syncs to staging automatically.
+5. **QA / Testing**: DevOps ensures the environment is stable and seeded with test data.
+6. **Production Deploy**: PR merges to `main`. ArgoCD syncs to prod with a canary rollout — 10% traffic first, then gradual promotion.
+7. **Monitoring**: Prometheus alerts if error rates spike. DevOps owns the alerting rules and runbooks.
 
-**Interview signal:** Explains how DevOps collapses dev/ops silos into a continuous loop. References DORA metrics (deployment frequency, lead time, MTTR, change failure rate).
+DevOps doesn't own a single stage — it **connects** them by automating handoffs so code flows from commit to production with minimal friction.
+
+**Interview signal:** Gives a concrete end-to-end example, not just a list. Explains how DevOps collapses dev/ops silos into a continuous feedback loop.
 
 ---
 
@@ -81,29 +79,40 @@ DevOps integrates into every SDLC stage to accelerate delivery while maintaining
 
 ---
 
-## Linux & OS Fundamentals
+## AI / LLM
 
-### 4. High Load with Low CPU
+### 4. LLM vs AI Agent in DevOps
 
-**Question:** A server has high load average but low CPU usage. How do you diagnose it?
+**Question:** What's the difference between an LLM and an AI Agent? Which daily DevOps tasks can each support?
 
 **Answer:**
 
-High load with low CPU means processes are blocked on something other than CPU — typically **I/O wait**, **swap**, or **locks**.
+**LLM** (Large Language Model) — A stateless model that generates text from a prompt. It explains, summarizes, and creates — but doesn't take action or maintain context across interactions.
 
-Load average includes processes in **running state** and **uninterruptible sleep (D state)**. High D-state = I/O bottleneck.
+**AI Agent** — Uses an LLM as its reasoning engine but adds **tool use**, **memory**, and **autonomy**. It can plan, execute actions (call APIs, run commands), observe results, and iterate until a goal is achieved.
 
-**Diagnostic steps:**
-1. `uptime` — Compare load average to CPU count (`nproc`).
-2. `top` — Check `%wa` (I/O wait) column.
-3. `iostat -x 1` — High `%util` or `await` = disk bottleneck.
-4. `vmstat 1` — Check `si/so` (swap activity) and `wa` columns.
-5. `iotop` — Find which processes are doing the most I/O.
-6. `free -h` — Check if the system is memory-starved and swapping.
+| Aspect | LLM | AI Agent |
+|--------|-----|----------|
+| **What it does** | Text in, text out | Plans, acts, observes, iterates |
+| **State** | Stateless per request | Maintains context across steps |
+| **Autonomy** | None — you drive each prompt | Can make decisions and loop |
 
-**Common causes:** slow disk/storage, swap thrashing from memory leaks, database lock contention, or stale NFS mounts causing processes to hang.
+**Daily DevOps tasks an LLM can support:**
+- Explain error logs — paste a stack trace, get a root cause hypothesis.
+- Generate configs — scaffold Terraform, Helm charts, or GitHub Actions workflows.
+- Write queries — build PromQL, KQL, or SQL from natural language.
+- Draft documentation — runbooks, onboarding guides, ADRs from existing code.
+- Code review — flag anti-patterns or missing error handling in PRs.
 
-**Interview signal:** Knows load includes blocked processes (not just CPU). Mentions I/O wait, D-state, and swap. Familiarity with `iotop`, `iostat`, `vmstat` indicates real experience.
+**Daily DevOps tasks an AI Agent can support:**
+- Incident triage — detect an alert, check logs, inspect pod status, correlate with recent deploys, suggest a fix.
+- Auto-remediation — restart a crashed service, clear a full disk, or roll back a failed deployment.
+- Drift detection — compare live infrastructure to IaC state and open a ticket or PR to reconcile.
+- Cost optimization — analyze cloud spend, identify underutilized resources, propose right-sizing changes.
+
+**Key caveat:** LLMs can be confidently wrong — always review output. Agents need guardrails in production: human-in-the-loop approvals, audit logging, and bounded permissions.
+
+**Interview signal:** Clearly distinguishes LLM (explains) from Agent (acts). Gives concrete DevOps examples for both. Mentions guardrails and the risk of blind trust in AI output.
 
 ---
 
@@ -138,7 +147,7 @@ Containers are **isolated processes sharing the host kernel** — not VMs. Three
 | # | Topic | Type | Level |
 |---|-------|------|-------|
 | 1 | Supply Chain Attacks | Conceptual + Practical | Core |
-| 2 | SDLC & DevOps Integration | Conceptual | Core |
+| 2 | SDLC & DevOps Integration | Conceptual + Example | Core |
 | 3 | Deployment Strategies | Practical + Scenario | Core |
-| 4 | Linux High Load Debug | Troubleshooting | Core |
+| 4 | LLM vs AI Agent in DevOps | Conceptual + Practical | Desirable |
 | 5 | Container Internals & Optimization | Conceptual + Practical | Core |
