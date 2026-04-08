@@ -15,6 +15,12 @@ Expanded topics including Terraform modules, cloud architecture, serverless, Git
 ### [Interview V3](interview-v3/)
 Advanced topics including supply chain security, SDLC integration, deployment strategies, containers, and AI/LLM in DevOps.
 
+### [Templates](templates/)
+Interview preparation templates.
+
+- [Interview Notes (EN)](templates/interview_notes_en.md)
+- [Notas de Entrevista (ES)](templates/interview_notes_es.md)
+
 ---
 
 ## Topics Covered
