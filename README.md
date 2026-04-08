@@ -15,6 +15,9 @@ Expanded topics including Terraform modules, cloud architecture, serverless, Git
 ### [Interview V3](interview-v3/)
 Advanced topics including supply chain security, SDLC integration, deployment strategies, containers, and AI/LLM in DevOps.
 
+### [Interview V4](interview-v4/)
+Advanced security topics including OIDC in CI/CD workflows.
+
 ### [Templates](templates/)
 Interview preparation templates.
 
@@ -39,3 +42,4 @@ Interview preparation templates.
 | Deployment Strategies | V3 |
 | Containers | V3 |
 | AI / LLM in DevOps | V1, V2, V3 |
+| OIDC / Cloud Security | V4 |
