@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevOps Interview Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0a0e14;
+            --bg-surface: #151b23;
+            --bg-elevated: #1c242d;
+            --border: #30363d;
+            --text-primary: #e6edf3;
+            --text-muted: #7d8590;
+            --accent: #00d9ff;
+            --accent-dim: rgba(0, 217, 255, 0.15);
+            --success: #3fb950;
+            --danger: #f85149;
+            --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --glow: 0 0 20px rgba(0, 217, 255, 0.3);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f5f0;
+            --bg-surface: #ffffff;
+            --bg-elevated: #f0f0eb;
+            --border: #d0d0c8;
+            --text-primary: #1a1a1a;
+            --text-muted: #666666;
+            --accent: #0099cc;
+            --accent-dim: rgba(0, 153, 204, 0.1);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --glow: 0 0 20px rgba(0, 153, 204, 0.2);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -12,301 +45,697 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: var(--font-sans);
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
-            color: #333;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(0, 217, 255, 0.01) 2px,
+                    rgba(0, 217, 255, 0.01) 4px
+                );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .container {
             max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 40px 20px;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #2c3e50;
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeInDown 0.5s ease forwards;
         }
 
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-family: var(--font-mono);
+            color: var(--accent);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .logo-text {
+            font-family: var(--font-mono);
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
         .section {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
         }
 
-        .section h2 {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
-            color: #2c3e50;
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            font-family: var(--font-mono);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        .section-header::before {
+            content: '>';
+            opacity: 0.6;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
             font-weight: 500;
+            color: var(--text-muted);
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="number"],
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+        .form-input {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
             border-radius: 4px;
+            padding: 10px 12px;
+            font-family: var(--font-sans);
             font-size: 14px;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        [data-theme="light"] .form-input {
+            background: var(--bg-primary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-group:hover {
+            border-color: var(--accent);
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group input:checked + .checkbox-custom {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .checkbox-group input:checked + .checkbox-custom::after {
+            content: '✓';
+            color: var(--bg-primary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .checkbox-label {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-primary);
+            flex-grow: 1;
+        }
+
+        .checkbox-field {
+            flex-grow: 1;
+        }
+
+        .checkbox-field .form-input {
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .checkbox-group:has(input:checked) .checkbox-field .form-input {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .question-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .question-item {
-            background: #f9f9f9;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 10px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .question-item:hover {
+            border-color: var(--accent);
         }
 
         .question-header {
             display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            cursor: pointer;
+        }
+
+        .question-checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .question-header input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            justify-content: center;
             cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .question-header h3 {
-            font-size: 16px;
-            color: #2c3e50;
+        .question-item:has(input:checked) .question-checkbox {
+            background: var(--success);
+            border-color: var(--success);
         }
 
-        .question-item textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .question-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .question-checkbox::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 2px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.15s ease;
+        }
+
+        .question-item:has(input:checked) .question-checkbox::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .question-text {
+            flex-grow: 1;
             font-size: 14px;
-            resize: vertical;
-            min-height: 60px;
+            line-height: 1.5;
+            color: var(--text-primary);
         }
 
-        .question-item textarea::placeholder {
-            color: #999;
+        .question-item:has(input:checked) .question-text {
+            color: var(--text-muted);
         }
 
-        .overall-notes textarea {
+        .question-expand {
+            color: var(--text-muted);
+            font-size: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .question-item.expanded .question-expand {
+            transform: rotate(180deg);
+        }
+
+        .question-notes {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.25s ease;
+        }
+
+        .question-item.expanded .question-notes {
+            max-height: 200px;
+        }
+
+        .question-notes-inner {
+            padding: 0 16px 16px 50px;
+        }
+
+        .question-notes textarea {
             width: 100%;
-            padding: 15px;
-            border: 1px solid #ddd;
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        textarea.form-input {
+            min-height: 120px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 32px;
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: 0.4s;
+        }
+
+        .btn {
+            padding: 14px 24px;
             border-radius: 4px;
-            font-size: 14px;
-            resize: vertical;
-            min-height: 150px;
-        }
-
-        .btn-download {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-download:hover {
-            background: #2980b9;
-        }
-
-        .btn-clear {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 8px;
+            font-family: var(--font-mono);
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .btn-clear:hover {
-            background: #c0392b;
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .btn-secondary:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-icon {
+            font-size: 16px;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 600px) {
-            .form-row {
+            .form-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px 16px;
             }
         }
     </style>
 </head>
 <body>
-    <h1>DevOps Interview Notes</h1>
-    <p class="subtitle">Candidate assessment form</p>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <span class="logo-icon">$_</span>
+                <span class="logo-text">DevOps Interview Notes</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                <span id="theme-icon">☀</span>
+            </button>
+        </header>
 
-    <div class="section">
-        <h2>Candidate Information</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="candidateName">Name</label>
-                <input type="text" id="candidateName" placeholder="Candidate name">
-            </div>
-            <div class="form-group">
-                <label for="interviewDate">Date</label>
-                <input type="text" id="interviewDate" placeholder="YYYY-MM-DD">
+        <div class="section">
+            <div class="section-header">Candidate Information</div>
+            <div class="section-content">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-input" id="candidateName" placeholder="Candidate name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-input" id="interviewDate" placeholder="YYYY-MM-DD">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position</label>
+                        <input type="text" class="form-input" id="position" placeholder="e.g., Senior DevOps Engineer">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Interviewer</label>
+                        <input type="text" class="form-input" id="interviewer" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Years of DevOps Experience</label>
+                        <input type="text" class="form-input" id="devopsYears" placeholder="e.g., 5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Years of Linux Experience</label>
+                        <input type="text" class="form-input" id="linuxYears" placeholder="e.g., 7">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="hasGithub">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-label">GitHub / GitLab Profile</span>
+                            <div class="checkbox-field">
+                                <input type="text" class="form-input" id="githubGitlab" placeholder="username or repository URL">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="hasBlog">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-label">Blog / Public Projects</span>
+                            <div class="checkbox-field">
+                                <input type="text" class="form-input" id="blogProjects" placeholder="blog URL or project name">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="hasOpenSource">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-label">Open Source Contributions</span>
+                            <div class="checkbox-field">
+                                <input type="text" class="form-input" id="openSource" placeholder="projects or links">
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Preferred Tech Stack</label>
+                        <input type="text" class="form-input" id="techStack" placeholder="Languages, tools, frameworks">
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="position">Position</label>
-                <input type="text" id="position" placeholder="e.g., Senior DevOps Engineer">
+
+        <div class="section">
+            <div class="section-header">Interview Questions</div>
+            <div class="section-content">
+                <div class="question-list">
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q1">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Tell me about yourself and your background.</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q1-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q2">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">What project are you most proud of? Why?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q2-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q3">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Describe a challenging production issue you debugged. How did you approach it?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q3-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q4">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">How do you stay updated with new technologies and trends?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q4-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q5">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Tell me about a time you had to learn a new tool or technology quickly.</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q5-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q6">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Describe your ideal work environment and team culture.</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q6-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q7">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">What are your career goals for the next few years?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q7-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q8">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Tell me about a time you had a disagreement with a colleague. How did you resolve it?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q8-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q9">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">What would you do differently in your last job?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q9-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question-item">
+                        <div class="question-header" onclick="toggleQuestion(this)">
+                            <input type="checkbox" id="q10">
+                            <span class="question-checkbox"></span>
+                            <span class="question-text">Do you have any questions for me about the role or company?</span>
+                            <span class="question-expand">▼</span>
+                        </div>
+                        <div class="question-notes">
+                            <div class="question-notes-inner">
+                                <textarea class="form-input" id="q10-notes" placeholder="Notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="interviewer">Interviewer</label>
-                <input type="text" id="interviewer" placeholder="Your name">
+        </div>
+
+        <div class="section">
+            <div class="section-header">Overall Notes</div>
+            <div class="section-content">
+                <textarea class="form-input" id="overallNotes" placeholder="General observations, impressions, strengths, weaknesses..."></textarea>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label for="devopsYears">Years of DevOps Experience</label>
-                <input type="text" id="devopsYears" placeholder="e.g., 5">
-            </div>
-            <div class="form-group">
-                <label for="linuxYears">Years of Linux Experience</label>
-                <input type="text" id="linuxYears" placeholder="e.g., 7">
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="githubGitlab">GitHub / GitLab Profile</label>
-            <input type="text" id="githubGitlab" placeholder="URL or username">
-        </div>
-        <div class="form-group">
-            <label for="blogProjects">Blog or Public Projects</label>
-            <input type="text" id="blogProjects" placeholder="URL or description">
-        </div>
-        <div class="form-group">
-            <label for="openSource">Open Source Contributions</label>
-            <input type="text" id="openSource" placeholder="Projects or links">
-        </div>
-        <div class="form-group">
-            <label for="techStack">Preferred Tech Stack</label>
-            <input type="text" id="techStack" placeholder="Languages, tools, frameworks">
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="downloadMarkdown()">
+                <span class="btn-icon">◆</span>
+                Download Markdown Report
+            </button>
+            <button class="btn btn-secondary" onclick="clearForm()">
+                Clear Form
+            </button>
         </div>
     </div>
-
-    <div class="section">
-        <h2>Interview Questions</h2>
-        <div id="questionsList">
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q1">
-                    <h3>Tell me about yourself and your background.</h3>
-                </div>
-                <textarea id="q1-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q2">
-                    <h3>What project are you most proud of? Why?</h3>
-                </div>
-                <textarea id="q2-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q3">
-                    <h3>Describe a challenging production issue you debugged. How did you approach it?</h3>
-                </div>
-                <textarea id="q3-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q4">
-                    <h3>How do you stay updated with new technologies and trends?</h3>
-                </div>
-                <textarea id="q4-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q5">
-                    <h3>Tell me about a time you had to learn a new tool or technology quickly.</h3>
-                </div>
-                <textarea id="q5-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q6">
-                    <h3>Describe your ideal work environment and team culture.</h3>
-                </div>
-                <textarea id="q6-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q7">
-                    <h3>What are your career goals for the next few years?</h3>
-                </div>
-                <textarea id="q7-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q8">
-                    <h3>Tell me about a time you had a disagreement with a colleague. How did you resolve it?</h3>
-                </div>
-                <textarea id="q8-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q9">
-                    <h3>What would you do differently in your last job?</h3>
-                </div>
-                <textarea id="q9-notes" placeholder="Notes..."></textarea>
-            </div>
-            <div class="question-item">
-                <div class="question-header">
-                    <input type="checkbox" id="q10">
-                    <h3>Do you have any questions for me about the role or company?</h3>
-                </div>
-                <textarea id="q10-notes" placeholder="Notes..."></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div class="section overall-notes">
-        <h2>Overall Notes</h2>
-        <textarea id="overallNotes" placeholder="General observations, impressions, strengths, weaknesses..."></textarea>
-    </div>
-
-    <button class="btn-download" onclick="downloadMarkdown()">Download Markdown Report</button>
-    <button class="btn-clear" onclick="clearForm()">Clear Form</button>
 
     <script>
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('theme-icon').textContent = theme === 'dark' ? '☀' : '☾';
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            document.getElementById('theme-icon').textContent = next === 'dark' ? '☀' : '☾';
+        }
+
+        function toggleQuestion(header) {
+            const item = header.closest('.question-item');
+            item.classList.toggle('expanded');
+        }
+
         function downloadMarkdown() {
             const candidateName = document.getElementById('candidateName').value || 'N/A';
             const interviewDate = document.getElementById('interviewDate').value || 'N/A';
@@ -314,11 +743,15 @@
             const interviewer = document.getElementById('interviewer').value || 'N/A';
             const devopsYears = document.getElementById('devopsYears').value || 'N/A';
             const linuxYears = document.getElementById('linuxYears').value || 'N/A';
-            const githubGitlab = document.getElementById('githubGitlab').value || 'N/A';
-            const blogProjects = document.getElementById('blogProjects').value || 'N/A';
-            const openSource = document.getElementById('openSource').value || 'N/A';
             const techStack = document.getElementById('techStack').value || 'N/A';
             const overallNotes = document.getElementById('overallNotes').value || 'N/A';
+
+            const hasGithub = document.getElementById('hasGithub').checked;
+            const githubGitlab = document.getElementById('githubGitlab').value || 'N/A';
+            const hasBlog = document.getElementById('hasBlog').checked;
+            const blogProjects = document.getElementById('blogProjects').value || 'N/A';
+            const hasOpenSource = document.getElementById('hasOpenSource').checked;
+            const openSource = document.getElementById('openSource').value || 'N/A';
 
             const questions = [
                 { id: 'q1', text: 'Tell me about yourself and your background.' },
@@ -344,14 +777,14 @@
             markdown += `| Interviewer | ${interviewer} |\n`;
             markdown += `| DevOps Experience | ${devopsYears} years |\n`;
             markdown += `| Linux Experience | ${linuxYears} years |\n`;
-            markdown += `| GitHub/GitLab | ${githubGitlab} |\n`;
-            markdown += `| Blog/Projects | ${blogProjects} |\n`;
-            markdown += `| Open Source | ${openSource} |\n`;
+            markdown += `| GitHub/GitLab | [${hasGithub ? 'x' : ' '}] ${hasGithub ? githubGitlab : 'N/A'} |\n`;
+            markdown += `| Blog/Projects | [${hasBlog ? 'x' : ' '}] ${hasBlog ? blogProjects : 'N/A'} |\n`;
+            markdown += `| Open Source | [${hasOpenSource ? 'x' : ' '}] ${hasOpenSource ? openSource : 'N/A'} |\n`;
             markdown += `| Tech Stack | ${techStack} |\n`;
 
             markdown += '\n## Interview Responses\n\n';
 
-            questions.forEach((q, index) => {
+            questions.forEach((q) => {
                 const checked = document.getElementById(q.id).checked;
                 const notes = document.getElementById(q.id + '-notes').value || 'N/A';
                 const status = checked ? '[x]' : '[ ]';
@@ -377,11 +810,14 @@
 
         function clearForm() {
             if (confirm('Are you sure you want to clear the entire form? This cannot be undone.')) {
-                document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => {
+                document.querySelectorAll('input[type="text"], textarea').forEach(el => {
                     el.value = '';
                 });
                 document.querySelectorAll('input[type="checkbox"]').forEach(el => {
                     el.checked = false;
+                });
+                document.querySelectorAll('.question-item.expanded').forEach(el => {
+                    el.classList.remove('expanded');
                 });
             }
         }

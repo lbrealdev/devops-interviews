@@ -19,7 +19,9 @@ Advanced topics including supply chain security, SDLC integration, deployment st
 Advanced security topics including OIDC in CI/CD workflows.
 
 ### [Interview Form](interview-form/)
-A client-side web app for conducting DevOps interviews. Features a form-based UI to collect candidate information, track open-ended questions with checkboxes, and download notes as a Markdown report. Designed for GitHub Pages hosting.
+A client-side web app for conducting DevOps interviews. Features a form-based UI to collect candidate information, track open-ended questions with checkboxes, and download notes as a Markdown report.
+
+- [Hosting Guide](interview-form/HOSTING.md) - Deploy to GitHub Pages
 
 ### [Templates](templates/)
 Interview preparation templates.
