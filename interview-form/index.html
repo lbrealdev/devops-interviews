@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Interview Notes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .question-item {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .question-header input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .question-header h3 {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .question-item textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .question-item textarea::placeholder {
+            color: #999;
+        }
+
+        .overall-notes textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .btn-download {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-download:hover {
+            background: #2980b9;
+        }
+
+        .btn-clear {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-clear:hover {
+            background: #c0392b;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>DevOps Interview Notes</h1>
+    <p class="subtitle">Candidate assessment form</p>
+
+    <div class="section">
+        <h2>Candidate Information</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="candidateName">Name</label>
+                <input type="text" id="candidateName" placeholder="Candidate name">
+            </div>
+            <div class="form-group">
+                <label for="interviewDate">Date</label>
+                <input type="text" id="interviewDate" placeholder="YYYY-MM-DD">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="position">Position</label>
+                <input type="text" id="position" placeholder="e.g., Senior DevOps Engineer">
+            </div>
+            <div class="form-group">
+                <label for="interviewer">Interviewer</label>
+                <input type="text" id="interviewer" placeholder="Your name">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="devopsYears">Years of DevOps Experience</label>
+                <input type="text" id="devopsYears" placeholder="e.g., 5">
+            </div>
+            <div class="form-group">
+                <label for="linuxYears">Years of Linux Experience</label>
+                <input type="text" id="linuxYears" placeholder="e.g., 7">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="githubGitlab">GitHub / GitLab Profile</label>
+            <input type="text" id="githubGitlab" placeholder="URL or username">
+        </div>
+        <div class="form-group">
+            <label for="blogProjects">Blog or Public Projects</label>
+            <input type="text" id="blogProjects" placeholder="URL or description">
+        </div>
+        <div class="form-group">
+            <label for="openSource">Open Source Contributions</label>
+            <input type="text" id="openSource" placeholder="Projects or links">
+        </div>
+        <div class="form-group">
+            <label for="techStack">Preferred Tech Stack</label>
+            <input type="text" id="techStack" placeholder="Languages, tools, frameworks">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Interview Questions</h2>
+        <div id="questionsList">
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q1">
+                    <h3>Tell me about yourself and your background.</h3>
+                </div>
+                <textarea id="q1-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q2">
+                    <h3>What project are you most proud of? Why?</h3>
+                </div>
+                <textarea id="q2-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q3">
+                    <h3>Describe a challenging production issue you debugged. How did you approach it?</h3>
+                </div>
+                <textarea id="q3-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q4">
+                    <h3>How do you stay updated with new technologies and trends?</h3>
+                </div>
+                <textarea id="q4-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q5">
+                    <h3>Tell me about a time you had to learn a new tool or technology quickly.</h3>
+                </div>
+                <textarea id="q5-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q6">
+                    <h3>Describe your ideal work environment and team culture.</h3>
+                </div>
+                <textarea id="q6-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q7">
+                    <h3>What are your career goals for the next few years?</h3>
+                </div>
+                <textarea id="q7-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q8">
+                    <h3>Tell me about a time you had a disagreement with a colleague. How did you resolve it?</h3>
+                </div>
+                <textarea id="q8-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q9">
+                    <h3>What would you do differently in your last job?</h3>
+                </div>
+                <textarea id="q9-notes" placeholder="Notes..."></textarea>
+            </div>
+            <div class="question-item">
+                <div class="question-header">
+                    <input type="checkbox" id="q10">
+                    <h3>Do you have any questions for me about the role or company?</h3>
+                </div>
+                <textarea id="q10-notes" placeholder="Notes..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="section overall-notes">
+        <h2>Overall Notes</h2>
+        <textarea id="overallNotes" placeholder="General observations, impressions, strengths, weaknesses..."></textarea>
+    </div>
+
+    <button class="btn-download" onclick="downloadMarkdown()">Download Markdown Report</button>
+    <button class="btn-clear" onclick="clearForm()">Clear Form</button>
+
+    <script>
+        function downloadMarkdown() {
+            const candidateName = document.getElementById('candidateName').value || 'N/A';
+            const interviewDate = document.getElementById('interviewDate').value || 'N/A';
+            const position = document.getElementById('position').value || 'N/A';
+            const interviewer = document.getElementById('interviewer').value || 'N/A';
+            const devopsYears = document.getElementById('devopsYears').value || 'N/A';
+            const linuxYears = document.getElementById('linuxYears').value || 'N/A';
+            const githubGitlab = document.getElementById('githubGitlab').value || 'N/A';
+            const blogProjects = document.getElementById('blogProjects').value || 'N/A';
+            const openSource = document.getElementById('openSource').value || 'N/A';
+            const techStack = document.getElementById('techStack').value || 'N/A';
+            const overallNotes = document.getElementById('overallNotes').value || 'N/A';
+
+            const questions = [
+                { id: 'q1', text: 'Tell me about yourself and your background.' },
+                { id: 'q2', text: 'What project are you most proud of? Why?' },
+                { id: 'q3', text: 'Describe a challenging production issue you debugged. How did you approach it?' },
+                { id: 'q4', text: 'How do you stay updated with new technologies and trends?' },
+                { id: 'q5', text: 'Tell me about a time you had to learn a new tool or technology quickly.' },
+                { id: 'q6', text: 'Describe your ideal work environment and team culture.' },
+                { id: 'q7', text: 'What are your career goals for the next few years?' },
+                { id: 'q8', text: 'Tell me about a time you had a disagreement with a colleague. How did you resolve it?' },
+                { id: 'q9', text: 'What would you do differently in your last job?' },
+                { id: 'q10', text: 'Do you have any questions for me about the role or company?' }
+            ];
+
+            let markdown = '# Interview Notes\n\n';
+
+            markdown += '## Candidate Information\n\n';
+            markdown += `| Field | Value |\n`;
+            markdown += `|-------|-------|\n`;
+            markdown += `| Name | ${candidateName} |\n`;
+            markdown += `| Date | ${interviewDate} |\n`;
+            markdown += `| Position | ${position} |\n`;
+            markdown += `| Interviewer | ${interviewer} |\n`;
+            markdown += `| DevOps Experience | ${devopsYears} years |\n`;
+            markdown += `| Linux Experience | ${linuxYears} years |\n`;
+            markdown += `| GitHub/GitLab | ${githubGitlab} |\n`;
+            markdown += `| Blog/Projects | ${blogProjects} |\n`;
+            markdown += `| Open Source | ${openSource} |\n`;
+            markdown += `| Tech Stack | ${techStack} |\n`;
+
+            markdown += '\n## Interview Responses\n\n';
+
+            questions.forEach((q, index) => {
+                const checked = document.getElementById(q.id).checked;
+                const notes = document.getElementById(q.id + '-notes').value || 'N/A';
+                const status = checked ? '[x]' : '[ ]';
+
+                markdown += `### ${status} ${q.text}\n\n`;
+                markdown += `**Notes:** ${notes}\n\n`;
+            });
+
+            markdown += '## Overall Notes\n\n';
+            markdown += `${overallNotes}\n`;
+
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const fileName = `interview_${candidateName.replace(/\s+/g, '_')}_${interviewDate.replace(/-/g, '')}.md`;
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear the entire form? This cannot be undone.')) {
+                document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => {
+                    el.value = '';
+                });
+                document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+                    el.checked = false;
+                });
+            }
+        }
+
+        document.getElementById('interviewDate').valueAsDate = new Date();
+    </script>
+</body>
+</html>
